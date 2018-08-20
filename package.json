@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "run-dev": "webpack-dev-server",
+    "dev": "webpack-dev-server",
     "build:prod": "webpack --mode=production"
   },
   "dependencies": {
@@ -9,7 +9,9 @@
     "react-dom": "^16.4.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1"
+    "react-router-dom": "^4.3.1",
+    "redux-saga": "^0.16.0",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -22,6 +24,7 @@
     "mini-css-extract-plugin": "^0.4.1",
     "node-sass": "^4.9.3",
     "path": "^0.12.7",
+    "redux-devtools-extension": "^2.13.5",
     "sass-loader": "^7.1.0",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",

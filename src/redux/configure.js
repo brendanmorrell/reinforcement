@@ -1,17 +1,21 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import favoritesReducer from './reducers/favoritesReducer.js';
-import appStatusReducer from './reducers/appStatusReducer.js';
+import authenticationReducer from './reducers/authenticationReducer.js';
+
+import rootSaga from './saga/rootSaga.js';
+
+const sagaMiddleware = createSagaMiddleware();
 
 export default () => {
   const store = createStore(
     combineReducers({
-      favorites: favoritesReducer,
-      appStatus: appStatusReducer,
+      authentication: authenticationReducer,
     }),
-    composeWithDevTools(applyMiddleware(thunk))
+    composeWithDevTools(applyMiddleware(sagaMiddleware))
   );
+  sagaMiddleware.run(rootSaga);
+
   return store;
 };

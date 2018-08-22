@@ -1,11 +1,15 @@
 {
   "scripts": {
     "dev": "webpack-dev-server",
+    "start": "nodemon src/server/server.js",
     "build:prod": "webpack --mode=production"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "history": "^4.7.2",
+    "nodemon": "^1.18.3",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-redux": "^5.0.7",

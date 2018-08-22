@@ -3,6 +3,7 @@ import createSagaMiddleware from 'redux-saga';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 import authenticationReducer from './reducers/authenticationReducer.js';
+import userDataReducer from './reducers/userDataReducer.js';
 
 import rootSaga from './saga/rootSaga.js';
 
@@ -12,6 +13,7 @@ export default () => {
   const store = createStore(
     combineReducers({
       authentication: authenticationReducer,
+      userData: userDataReducer,
     }),
     composeWithDevTools(applyMiddleware(sagaMiddleware))
   );

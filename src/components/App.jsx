@@ -1,9 +1,17 @@
 import React from 'react';
-import '../styles/styles.scss';
+import { Provider } from 'react-redux';
+import configureStore from '../redux/configure.js';
+// import '../styles/styles.scss';
+
+import AppRouter, { history } from './routers/AppRouter.jsx';
+const store = configureStore();
+
 export default () => {
   return (
     <div>
-      <h1>this is the app</h1>
+      <Provider store={store}>
+        <AppRouter />
+      </Provider>
     </div>
   );
 };

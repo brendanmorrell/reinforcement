@@ -5,7 +5,7 @@ import createHistory from 'history/createBrowserHistory';
 import PetDetailsPage from '../PetDetailsPage.jsx';
 import LoginPage from '../LoginPage.jsx';
 import HomePage from '../HomePage.jsx';
-import Favorites from '../Favorites.jsx';
+import Favorites from '../FavoritesPage.jsx';
 import NotFoundPage from '../NotFoundPage.jsx';
 
 import UnauthenticatedRoute from './UnauthenticatedRoute.jsx';

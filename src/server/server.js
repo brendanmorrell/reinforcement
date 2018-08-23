@@ -9,6 +9,7 @@ const keys = {
 };
 const cookieSession = require('cookie-session');
 const bodyParser = require('body-parser');
+
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
@@ -20,7 +21,11 @@ app.use(
     keys: [process.env.COOKIE_KEY],
   })
 );
-
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -55,6 +60,8 @@ passport.use(
   )
 );
 
+app.get('/test', (req, res) => res.json('test'));
+
 app.get(
   '/auth/google',
   passport.authenticate('google', {
@@ -63,7 +70,7 @@ app.get(
 );
 app.get('/auth/google/callback', passport.authenticate('google'), (req, res) => {
   res.cookie('uuid', req.session.passport.user);
-  res.redirect(302, 'http://localhost:8081/dashboard');
+  res.redirect(302, 'http://localhost:8080/dashboard');
 });
 
 // app.get('/api/current_user', (req, res) => {
@@ -80,6 +87,7 @@ app.post('/is-authenticated', (req, res) => {
   //should get this from db
 
   let userData;
+  console.log(uuid);
   if (uuid === '106177121669500992155') {
     userData = {
       name: 'Brendan Morrell',
@@ -90,6 +98,10 @@ app.post('/is-authenticated', (req, res) => {
     };
   }
   res.status(200).json(userData);
+});
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.send();
 });
 // // set up a client from the pool, and make a query using that client
 // console.log('starting deserialize user');

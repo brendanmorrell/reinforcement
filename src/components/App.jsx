@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 import AppRouter, { history } from './routers/AppRouter.jsx';
-import { logIn } from '../redux/actions/authenticationActions.js';
+import { logIn } from '../redux/actions/authenticationActions';
 
 class App extends Component {
   constructor(props) {
@@ -11,23 +11,9 @@ class App extends Component {
     this.state = {};
   }
   componentDidMount() {
-    const [cookie] = document.cookie
-      .split(';')
-      .filter(x => x.includes('uuid'))
-      .map(x => x.replace(/uuid=/, '').trim());
-
-    let data = JSON.stringify({ uuid: cookie });
-    axios
-      .post('http://localhost:3000/is-authenticated', data, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(({ data }) => {
-        if (data.isAuthenticated) {
-          this.props.logIn();
-        }
-      });
+    if (!this.props.isAuthenticated) {
+      this.props.logIn();
+    }
   }
   render() {
     return (
@@ -38,6 +24,7 @@ class App extends Component {
   }
 }
 
+const mapStateToProps = ({ authentication: { isAuthenticated } }) => ({ isAuthenticated });
 export default connect(
   null,
   { logIn }

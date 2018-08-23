@@ -12,6 +12,8 @@ export default (state = initialState, action) => {
     case types.POPULATE_USER_DATA:
       const { name, uuid, favorites, age } = action.payload;
       return { name, uuid, favorites, age };
+    case types.CLEAR_USER_DATA:
+      return initialState;
     default:
       return state;
   }

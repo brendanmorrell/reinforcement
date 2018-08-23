@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import Carousel from 'nuka-carousel';
 
 import Thumbnail from './Thumbnail.jsx';
-import { addFavorite } from '../redux/actions/userDataActions.js';
-
+import { addFavorite, removeFavorite } from '../redux/actions/userDataActions.js';
+import parseData from '../redux/utils/getAnimalDetailsFromJSON.js';
 class PetDetails extends Component {
   constructor(props) {
     super(props);
@@ -12,79 +12,45 @@ class PetDetails extends Component {
   }
 
   render() {
+    let petInfo = parseData(this.props.petInfo);
     let {
-      description: { $t: description },
-      age: { $t: age },
-      name: { $t: name },
-      size: { $t: size },
-      sex: { $t: sex },
-      animal: { $t: animal },
-      id: { $t: id },
-      options: { option },
-      mix: { $t: mix },
-      breeds: { breed },
-      contact: {
-        phone: { $t: phone },
-        state: { $t: state },
-        email: { $t: email },
-        city: { $t: city },
-        zip: { $t: zip },
-        fax: { $t: fax },
-        address1: { $t: address1 },
-      },
-      shelterId: { $t: shelterId },
-      shelterPetId: { $t: shelterPetId },
-    } = this.props.petInfo;
-    if (breed) {
-      if (breed.constructor.name === 'Object') breed = Object.values(breed);
-      breed = breed
-        .map(x => (x.constructor.name === 'Object' ? x['$t'] : x))
-        .map((x, i, arr) => (i < arr.length - 1 ? x + ', ' : x));
-    }
-    if (option) {
-      if (option.constructor.name === 'Object') option = Object.values(option);
-      option = option.map(x => x['$t']).map((x, i, arr) => (i < arr.length - 1 ? x + ', ' : x));
-    }
-    let petInfo = Object.assign(
-      {
-        description,
-        age,
-        name,
-        size,
-        sex,
-        animal,
-        id,
-        option,
-        mix,
-        breed,
-        phone,
-        state,
-        email,
-        city,
-        zip,
-        fax,
-        address1,
-        shelterId,
-        shelterPetId,
-      },
-      { petID: null }
-    );
+      description,
+      age,
+      name,
+      size,
+      sex,
+      animal,
+      id,
+      option,
+      mix,
+      breed,
+      phone,
+      state,
+      email,
+      city,
+      zip,
+      fax,
+      address1,
+      shelterId,
+      shelterPetId,
+    } = petInfo;
     let thumbnails = this.props.petInfo.media.photos.photo
       .filter(x => x['@size'] === 'x')
       .map((x, i) => {
         if (i === 0) petInfo.petID = x['$t'];
-        return (
-          <div>
-            <Thumbnail src={x['$t']} />
-            <h1 onClick={() => this.props.addFavorite(petInfo)}>click</h1>
-          </div>
-        );
+        return <Thumbnail src={x['$t']} />;
       });
+    console.log('petinfavorites: ', this.props);
     return (
       <div>
         <Carousel framePadding={'0px'} dragging={true} initialSlideHeight={300} autoplay={true}>
           {thumbnails}
         </Carousel>
+        {this.props.petInFavorites ? (
+          <button onClick={() => this.props.removeFavorite(petInfo)}>Remove from favorites</button>
+        ) : (
+          <button onClick={() => this.props.addFavorite(petInfo)}>Add to favorites</button>
+        )}
         {description && <p>{description}</p>}
         <ul>
           {name && <li>{`name: ${name}`}</li>}
@@ -111,7 +77,7 @@ class PetDetails extends Component {
                 {phone && <li>{`Phone: ${phone}`}</li>}
                 {email && <li>{`Email: ${email}`}</li>}
                 {fax && <li>{`Fax: ${fax}`}</li>}
-                {(address1 || city || stae || zip) && (
+                {(address1 || city || state || zip) && (
                   <li>
                     {`Address: ${address1} ${city}, ${state} ${zip}`.replace(/undefined\,/, '')}
                   </li>
@@ -126,12 +92,16 @@ class PetDetails extends Component {
     );
   }
 }
-const mapStateToProps = ({ petSearch }, ownProps) => {
+const mapStateToProps = ({ petSearch, userData }, ownProps) => {
+  let url = ownProps.match.params.id;
+  let petInfo = petSearch.searchResults.filter(x => x.id['$t'] === url)[0];
+  let petInFavorites = userData.favorites.some(x => x.id === url);
   return {
-    petInfo: petSearch.searchResults.filter(x => x.id['$t'] === ownProps.match.params.id)[0],
+    petInfo,
+    petInFavorites,
   };
 };
 export default connect(
   mapStateToProps,
-  { addFavorite }
+  { addFavorite, removeFavorite }
 )(PetDetails);
